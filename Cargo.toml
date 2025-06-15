@@ -50,3 +50,7 @@ harness = false
 [[bench]]
 name = "latency"
 harness = false
+
+[[bench]]
+name = "par_iter"
+harness = false
