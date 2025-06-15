@@ -2762,9 +2762,13 @@ pub struct ParIter<'g, K, V, G> {
 #[cfg(feature = "rayon")]
 impl<'g, K, V, G> fmt::Debug for ParIter<'g, K, V, G> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("ParIter").finish()
+        f.debug_struct("ParIter")
+            .field("start", &self.start)
+            .field("end", &self.end)
+            .finish()
     }
 }
+
 
 #[cfg(feature = "rayon")]
 unsafe impl<K, V, G> Send for ParIter<'_, K, V, G>

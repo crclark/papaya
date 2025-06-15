@@ -902,6 +902,13 @@ pub struct ParIter<'g, K, G> {
 }
 
 #[cfg(feature = "rayon")]
+impl<'g, K, G> fmt::Debug for ParIter<'g, K, G> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("ParIter").field(&self.inner).finish()
+    }
+}
+
+#[cfg(feature = "rayon")]
 impl<'g, K, G> rayon::iter::ParallelIterator for ParIter<'g, K, G>
 where
     K: Sync + 'g,
@@ -917,12 +924,6 @@ where
     }
 }
 
-#[cfg(feature = "rayon")]
-impl<'g, K, G> fmt::Debug for ParIter<'g, K, G> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("ParIter").finish()
-    }
-}
 
 impl<'g, K: 'g, G> Iterator for Iter<'g, K, G>
 where
