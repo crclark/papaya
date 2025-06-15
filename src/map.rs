@@ -8,6 +8,7 @@ use std::fmt;
 use std::hash::{BuildHasher, Hash};
 use std::marker::PhantomData;
 
+
 /// A concurrent hash table.
 ///
 /// Most hash table operations require a [`Guard`](crate::Guard), which can be acquired through
@@ -1527,6 +1528,15 @@ where
         }
     }
 
+    /// Returns a parallel iterator over all key-value pairs.
+    ///
+    /// Requires the `rayon` feature.
+    #[cfg(feature = "rayon")]
+    #[inline]
+    pub fn par_iter(&self) -> raw::ParIter<'_, K, V, MapGuard<G>> {
+        self.map.raw.par_iter(&self.guard)
+    }
+
     /// An iterator visiting all keys in arbitrary order.
     /// The iterator element type is `&K`.
     ///
@@ -1569,6 +1579,22 @@ where
 
     fn into_iter(self) -> Self::IntoIter {
         self.iter()
+    }
+}
+
+#[cfg(feature = "rayon")]
+impl<'a, K, V, S, G> rayon::iter::IntoParallelIterator for &'a HashMapRef<'_, K, V, S, G>
+where
+    K: Hash + Eq + Sync,
+    V: Sync,
+    S: BuildHasher,
+    G: Guard + Sync,
+{
+    type Item = (&'a K, &'a V);
+    type Iter = raw::ParIter<'a, K, V, MapGuard<G>>;
+
+    fn into_par_iter(self) -> Self::Iter {
+        self.map.raw.par_iter(&self.guard)
     }
 }
 
