@@ -7,12 +7,19 @@ pub use counter::Counter;
 pub use parker::Parker;
 pub use stack::Stack;
 pub use tagged::{untagged, AtomicPtrFetchOps, StrictProvenance, Tagged, Unpack};
+use std::fmt;
 
 /// A `seize::Guard` that has been verified to belong to a given map.
 pub trait VerifiedGuard: seize::Guard {}
 
 #[repr(transparent)]
 pub struct MapGuard<G>(G);
+
+impl<G> fmt::Debug for MapGuard<G> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("MapGuard").finish()
+    }
+}
 
 impl<G> MapGuard<G> {
     /// Create a new `MapGuard`.
